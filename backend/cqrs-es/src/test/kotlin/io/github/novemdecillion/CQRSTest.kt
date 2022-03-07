@@ -2,7 +2,7 @@ package io.github.novemdecillion
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.uuid.Generators
-import io.github.novemdecillion.cqrs.AggrerateID
+import io.github.novemdecillion.cqrs.AggregateID
 import io.github.novemdecillion.cqrs.CommandService
 import org.junit.jupiter.api.Test
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -46,13 +46,23 @@ class CQRSTest(val applicationContext: ConfigurableApplicationContext) {
 	fun contextLoads() {
 //    EventStoreService()
 
-    val user = applicationContext.getBean(UserAggregate::class.java, CreateUserCommand("", "", ""))
-    println(user)
+//    val user = applicationContext.getBean(UserAggregate::class.java, CreateUserCommand("", "", ""))
+//    println(user)
 
-//    CommandService(ObjectMapper()).init(CQRSTest::class.java.packageName, applicationContext)
-//
+    val aggregateDefinition = CommandService.scan(CQRSTest::class.java.packageName)
+    val commandService = CommandService(aggregateDefinition)
+
     val generator = Generators.timeBasedGenerator()
     val userId = generator.generate().toString()
+    val createUserCommand = CreateUserCommand(userId, "Kumar", "Chandrakant")
+
+    commandService.dispatch(createUserCommand)
+
+
+//    CommandService(ObjectMapper()).init(CQRSTest::class.java.packageName, applicationContext)
+
+//    val generator = Generators.timeBasedGenerator()
+//    val userId = generator.generate().toString()
 
 /*
     var events: List<Event?>? = null

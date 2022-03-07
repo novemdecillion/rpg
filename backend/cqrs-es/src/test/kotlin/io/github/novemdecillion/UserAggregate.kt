@@ -1,8 +1,6 @@
 package io.github.novemdecillion
 
-import io.github.novemdecillion.cqrs.Aggregate
-import io.github.novemdecillion.cqrs.AggrerateID
-import io.github.novemdecillion.cqrs.Command
+import io.github.novemdecillion.cqrs.*
 import org.springframework.beans.factory.config.ConfigurableBeanFactory
 import org.springframework.context.ApplicationContext
 import org.springframework.context.annotation.Scope
@@ -10,7 +8,7 @@ import org.springframework.stereotype.Component
 
 @Command
 data class CreateUserCommand (
-  @AggrerateID
+  @AggregateID
   val userId: String,
   val firstName: String,
   val lastName: String
@@ -29,16 +27,34 @@ data class Contact (
 
 @Command
 data class UpdateUserCommand (
-  @AggrerateID
+  @AggregateID
   val userId: String,
   val addresses: Set<Address>,
   val contacts: Set<Contact>
 )
 
 @Aggregate
-@Component
+//@Component
 //@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-class UserAggregate(/*val applicationContext: ApplicationContext,*/ val command: CreateUserCommand) {
+class UserAggregate(val userId: String,
+                    val firstName: String,
+                    val lastName: String) {
+
+  @CommandHandler
+  constructor(command: CreateUserCommand):
+    this(command.userId, command.firstName, command.lastName)
+
+  @CommandHandler
+  fun handleCreateUserCommand(command: CreateUserCommand): CreateUserCommand {
+    return command
+  }
+
+  @EventHandler
+  fun handleCreatedUserEvent(command: CreateUserCommand) {
+
+  }
+
+
 /*
   @AggrerateID
   val userId: String

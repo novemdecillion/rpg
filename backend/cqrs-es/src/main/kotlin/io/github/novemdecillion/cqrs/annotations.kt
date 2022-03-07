@@ -17,7 +17,10 @@ annotation class Command
 annotation class Event
 
 
-annotation class AggrerateID()
+annotation class AggregateID()
 
 
 annotation class CommandHandler()
+
+
+annotation class EventHandler()
